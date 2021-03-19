@@ -22,40 +22,25 @@ export const getStaticProps = async (context) => {
     const id = context.params.id;
     // console.log(id)
     const res = await fetch('http://localhost:4000/products/'+ id);
+    const cart = await fetch('http://localhost:4000/cartItems');
     const data = await res.json();
+    const cartData = await cart.json();
 
     return {
         props:{
             data:data,
+            cartData:cartData
         }
     }
 }
 
-const handleclick= async (a)=>{
-    // const router = useRouter()
-    var ba = a+10;
-    const res = await fetch('http://localhost:4000/cartItems');
-    console.log(ba + res);
-    // router.push('/cart')
-}
-
-const Details = ({data})=>{
+const Details = ({data, cartData})=>{
     const router = useRouter()
     // console.log(data)
     // var a = 5;
     return(
-        // <div>
-        //     <h1>{data[0].productName}</h1>
-        //     <h2>{data[0].description}</h2>
-        //     <Link href={'/cart'}>
-        //     <button onClick={handleclick(a)}>
-        //          Activate Lasers
-        //     </button>
-        //     </Link>
-        //     <span onClick={() => router.push('/cart')}>Cart Screen</span>
-        // </div>
         <div>
-            <Home item={data}/>
+            <Home item={data} cartData={cartData} />
         </div>
     )
 }

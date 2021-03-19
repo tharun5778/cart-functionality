@@ -7,7 +7,7 @@ class CartScreen extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      cartProducts:[]
+      cartProducts:[],
     };
   }
 
@@ -16,8 +16,7 @@ class CartScreen extends Component{
   }
 
   removeFromCart = async (item)=>{
-    // var products = this.state.cartProducts.filter((i)=>{return i.id != item.id})
-    console.log(this.state.cartProducts);
+    
     var element = {}
     element.productID = item.id;
     var config = {
@@ -31,9 +30,11 @@ class CartScreen extends Component{
     console.log(config);
     
     axios(config)
-    .then(function (response) {
-        
-        // this.setState({cartProducts: products})
+    .then( (response)=> {
+        const {cartProducts} = this.state
+        var products = cartProducts.filter((i)=>{return i.id != item.id})
+        console.log(cartProducts);
+        this.setState({cartProducts: products})
       console.log(JSON.stringify(response.data));
        
     })
@@ -43,32 +44,41 @@ class CartScreen extends Component{
     
   }
 
+  total=()=>{
+    var Total = 0;
+    this.state.cartProducts.map((i)=>{
+      Total = Total + (i.price * i.quantity);
+    })
+    return Total;
+  }
 
 
   render(){
       console.log(this.state.cartProducts)
     return (
-      <div>
-        {/* <h1>{this.props.item[0].productName}</h1>
-        <h2>{this.props.item[0].description}</h2>
-        <div>
-          <button onClick={()=>this.add(this.props.item[0])}>
-              add
-          </button>
-        </div> */}
-        {this.state.cartProducts.map((cartItem) =>{
+      <div style={{backgroundColor:'#edebeb',height:'100vh', width:'null'}}>
+        {(this.state.cartProducts.length == 0) && (<div><p>cart is empty</p></div>)}
+        {!(this.state.cartProducts.length == 0) && (
+          <div>
+            {this.state.cartProducts.map((cartItem) =>{
             return(
                 <div>
-                    <h1>{cartItem.desc1ription}</h1> 
-                    <h1>{cartItem.productID}</h1>
-                    <h1>{cartItem.price}</h1>
-                    <h1>{cartItem.quantity}</h1>
+                    <h1>prodict id :{cartItem.productID}</h1>
+                    <h1> {cartItem.description}</h1> 
+                    <h1>price : {cartItem.price}</h1>
+                    <h1>quanity : {cartItem.quantity}</h1>
                     <button onClick={()=>this.removeFromCart(cartItem)}>
-                        remove
+                        remove from cart
                     </button>
                 </div>
             )
         })}
+          </div>
+          
+        ) }
+        <hr />
+        <div><p> total price: {this.total()}</p></div>
+        
         
       </div>
     )
